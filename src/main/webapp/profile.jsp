@@ -1,5 +1,9 @@
 
 
+<%@page import="com.tech.blog.entities.Category"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="com.tech.blog.helper.ConnectionProvider"%>
+<%@page import="com.tech.blog.dao.PostDao"%>
 <%@page import="com.tech.blog.entities.Message"%>
 <%@page import="com.tech.blog.entities.User"%>
 <%@page errorPage="Error_page.jsp"%>
@@ -65,9 +69,10 @@ if (user == null) {
 							<li><a class="dropdown-item" href="#">Something else
 									here</a></li>
 						</ul></li>
-						<li class="nav-item"><a class="nav-link active"
-						aria-current="page" href="#"><span class="fa fa-asterisk-o"></span>Post</a>
-					</li>
+
+					<li class="nav-item"><a class="nav-link" href="#"
+						data-bs-toggle="modal" data-bs-target="#add-post-modal"><span
+							class="fa fa-edit"></span>Create Post</a></li>
 
 				</ul>
 				<ul class="navbar-nav mr-right">
@@ -198,14 +203,67 @@ if (user == null) {
 
 	<!-- end of profile modal -->
 
+	<!-- add post modal -->
+
+	<div class="modal fade" id="add-post-modal" tabindex="-1"
+		aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Provide Post
+						Details</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+
+				<div class="modal-body">
+					<form action="AddPostServlet" method="POST">
+						<div class="form-group mb-2">
+							<select class="form-control">
+							<option selected disabled>-----Select Category:-----</option>
+							<%
+							PostDao pd = new PostDao(ConnectionProvider.getConnection());
+							ArrayList<Category> list = pd.getAllCategories();
+							for(Category c:list){								
+							%>
+							<option><%= c.getCname()%></option>
+							<%} %>
+							
+							</select>
+						</div>
+						<div class="form-group mb-2">
+							<input type="text" required placeholder="Title of the post"
+								class="form-control" />
+						</div>
+						<div class="form-group mb-2">
+							<textarea class="form-control" style="height: 150px"
+								placeholder="Enter your content"></textarea>
+						</div>
+						<div class="form-group mb-2">
+							<textarea class="form-control" style="height: 100px"
+								placeholder="Enter your program(if any)"></textarea>
+						</div>
+						<div class="form-group">
+							<label>Select your picture</label> <input type="file"
+								class="form-control">
+						</div>
+					</form>
+
+
+				</div>
+				<div class="modal-body"></div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-bs-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary">Save changes</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 
 
-
-
-
-
-
+	<!-- end of add post modal -->
 
 	<!--javascript  -->
 
