@@ -20,6 +20,7 @@ public class RegisterServlet extends HttpServlet {
 
 	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter out = response.getWriter();
+		UserDao dao = new UserDao(ConnectionProvider.getConnection());
 		String check = request.getParameter("check");
 		if (check == null) {
 			out.println("Please check the terms and conditions.");
@@ -29,10 +30,18 @@ public class RegisterServlet extends HttpServlet {
 			String password = request.getParameter("user_password");
 			String gender = request.getParameter("gender");
 			String about = request.getParameter("about");
+			
+			
+			if(dao.getUserByEmail(email)) {
+				out.println("Email already in use. Kindly use another email.");
+				return;
+			}
+			
 			//create user object
 			User user = new User(name, email, password, gender, about, null);
 			//creat user dao object
-			UserDao dao = new UserDao(ConnectionProvider.getConnection());
+			
+			
 			if(dao.addUSer(user)) {
 				out.println("done");
 			}

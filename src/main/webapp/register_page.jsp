@@ -1,5 +1,12 @@
+<%@page import="com.tech.blog.entities.User"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%
+User user = (User) session.getAttribute("currentuser");
+if (user != null) {
+	response.sendRedirect("profile.jsp");
+}
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -40,13 +47,13 @@
 						<form id="reg-form" action="RegisterServlet" method="POST">
 							<div class="mb-3">
 								<label for="user_name" class="form-label">Username</label> <input
-									name="user_name" type="text" class="form-control"
+									name="user_name" required type="text" class="form-control"
 									id="user_name">
 								<div id="emailHelp" class="form-text"></div>
 							</div>
 							<div class="mb-3">
 								<label for="exampleInputEmail1" class="form-label">Email
-									address</label> <input name="user_email" type="email"
+									address</label> <input name="user_email" required type="email"
 									class="form-control" id="exampleInputEmail1"
 									aria-describedby="emailHelp">
 								<div id="emailHelp" class="form-text">We'll never share
@@ -54,12 +61,12 @@
 							</div>
 							<div class="mb-3">
 								<label for="exampleInputPassword1" class="form-label">Password</label>
-								<input name="user_password" type="password" class="form-control"
-									id="exampleInputPassword1">
+								<input name="user_password" required type="password"
+									class="form-control" id="exampleInputPassword1">
 							</div>
 							<div class="mb-3">
 								<label for="gender">Gender</label> <br> <input type="radio"
-									id="gender" name="gender" value="male">Male <input
+									id="gender" name="gender" required value="male">Male <input
 									type="radio" id="gender" name="gender" value="female">Female
 							</div>
 							<div class="form-group">
@@ -73,9 +80,10 @@
 									id="exampleCheck1"> <label class="form-check-label"
 									for="exampleCheck1">I agree to terms and conditions.</label>
 							</div>
-							<div class="container text-center" id="loader" style="display:none;">
-							<span class="fa fa-refresh fa-spin fa-4x"></span>
-							<h4>Please Wait...</h4>
+							<div class="container text-center" id="loader"
+								style="display: none;">
+								<span class="fa fa-refresh fa-spin fa-4x"></span>
+								<h4>Please Wait...</h4>
 							</div>
 							<br>
 							<button id="submit-btn" type="submit" class="btn btn-primary">Submit</button>
@@ -105,7 +113,10 @@
 
 
 	<script src="js/myjs.js" type="text/javascript"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"
+		integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA=="
+		crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	<script>
 	$(document).ready(function(){
 		console.log("loaded...")

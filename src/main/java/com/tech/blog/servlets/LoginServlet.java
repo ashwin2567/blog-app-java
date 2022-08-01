@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.tech.blog.dao.UserDao;
+import com.tech.blog.entities.Message;
 import com.tech.blog.entities.User;
 import com.tech.blog.helper.ConnectionProvider;
 
@@ -27,15 +28,23 @@ public class LoginServlet extends HttpServlet {
 
 		if (u == null) {
 //			login error
-			response.getWriter().println("Invalid credentials.");
-		}
-		else {
-			System.out.println(u.getName());
+//			response.getWriter().println("Invalid credentials.");
+			Message msg = new Message();
+			msg.setContent("Invalid credentials.");
+			msg.setType("error");
+			msg.setCssClass("alert-danger");
+			
+			response.sendRedirect("login_page.jsp");
+			
+			HttpSession session = request.getSession();
+			session.setAttribute("msg", msg);
+		} else {
+			//System.out.println(u.getName());
 //			we will store user to session to keep him logged in throughout.--session end with browser
 //			For more complicated data we may use cookies
 			HttpSession session = request.getSession();
 			session.setAttribute("currentuser", u);
-			response.sendRedirect("profile.jsp");			
+			response.sendRedirect("profile.jsp");
 		}
 	}
 

@@ -31,6 +31,45 @@ public class UserDao {
 		return f;
 	}
 	
+	public boolean updateUser(User user)
+	{
+		boolean f = false;
+		try {
+			String query = "update user set name=?, email=?, password=?, gender=?, about=?, profile=? where id = ?";
+			PreparedStatement pstmt = con.prepareStatement(query);
+			pstmt.setString(1, user.getName());
+			pstmt.setString(2, user.getEmail());
+			pstmt.setString(3, user.getPassword());
+			pstmt.setString(4, user.getGender());
+			pstmt.setString(5, user.getAbout());
+			pstmt.setString(6, user.getProfile());
+			pstmt.setInt(7, user.getId());
+			
+			pstmt.executeUpdate();
+			f = true;
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return f;
+	}
+	
+	public boolean getUserByEmail(String email) {
+		boolean result = false;
+		try {
+			String query = "select * from user where email=?";
+			PreparedStatement pstmt = con.prepareStatement(query);
+			pstmt.setString(1, email);
+			ResultSet set = pstmt.executeQuery();
+			result = set.next();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
 	public User getUserByEmailPassword(String email, String password)
 	{
 		User user = null;
