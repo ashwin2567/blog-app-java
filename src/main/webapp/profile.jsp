@@ -217,46 +217,47 @@ if (user == null) {
 				</div>
 
 				<div class="modal-body">
-					<form action="AddPostServlet" method="POST">
+					<form id="add-post-form" action="AddPostServlet" method="POST">
 						<div class="form-group mb-2">
-							<select class="form-control">
-							<option selected disabled>-----Select Category:-----</option>
-							<%
-							PostDao pd = new PostDao(ConnectionProvider.getConnection());
-							ArrayList<Category> list = pd.getAllCategories();
-							for(Category c:list){								
-							%>
-							<option><%= c.getCname()%></option>
-							<%} %>
-							
+							<select class="form-control" name="cid">
+								<option selected disabled>-----Select Category:-----</option>
+								<%
+								PostDao pd = new PostDao(ConnectionProvider.getConnection());
+								ArrayList<Category> list = pd.getAllCategories();
+								for (Category c : list) {
+								%>
+								<option value=<%=c.getCid()%>><%=c.getCname()%></option>
+								<%
+								}
+								%>
+
 							</select>
 						</div>
 						<div class="form-group mb-2">
-							<input type="text" required placeholder="Title of the post"
-								class="form-control" />
+							<input type="text" name="pTitle" required
+								placeholder="Title of the post" class="form-control" />
 						</div>
 						<div class="form-group mb-2">
-							<textarea class="form-control" style="height: 150px"
-								placeholder="Enter your content"></textarea>
+							<textarea class="form-control" name="pContent"
+								style="height: 150px" placeholder="Enter your content"></textarea>
 						</div>
 						<div class="form-group mb-2">
-							<textarea class="form-control" style="height: 100px"
+							<textarea class="form-control" name="pCode" style="height: 100px"
 								placeholder="Enter your program(if any)"></textarea>
 						</div>
-						<div class="form-group">
-							<label>Select your picture</label> <input type="file"
+						<div class="form-group mb-4">
+							<label>Select your picture</label> <input type="file" name="pPic"
 								class="form-control">
+						</div>
+						<div class="container text-center">
+							<button type="submit" class="btn btn-outline-primary">Post</button>
+						
 						</div>
 					</form>
 
 
 				</div>
-				<div class="modal-body"></div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary"
-						data-bs-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary">Save changes</button>
-				</div>
+				
 			</div>
 		</div>
 	</div>
@@ -279,6 +280,11 @@ if (user == null) {
 		integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
 		crossorigin="anonymous"></script>
 	<script src="js/myjs.js" type="text/javascript"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"
+		integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA=="
+		crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 	<script>
 		$(document).ready(function() {
 			let editStatus = false;
@@ -307,6 +313,40 @@ if (user == null) {
 		});
 	</script>
 
+	<!-- add post js -->
+	<script>
+		$(document).ready(function(e) {
+			$("#add-post-form").on("submit", function(event) {
+				event.preventDefault();
+				let form = new FormData(this);
+				
+				$.ajax({
+					url:"AddPostServlet",
+					type:'POST',
+					data:form,
+					success: function(data,textStatus, jqXHR){
+						if(data.trim() == 'done'){
+							swal("Good job!", "Post saved successfully.", "success");
+							$('#add-post-modal').modal('hide')
+							$('#add-post-form').trigger('reset');
+						}
+						else{
+							swal("Error!", "Something went wrong!", "error");
+						}
+					},
+					error: function(jqXHR, textStatus, errorThrown){
+						swal("Error!", "Something went wrong!", "error");
+					},
+					processData: false,
+					contentType: false
+				});
+			});
+			$("#add-post-modal").on("hidden.bs.modal", function() {
+				$('#add-post-form').trigger('reset');
+			});
+
+		});
+	</script>
 
 
 
