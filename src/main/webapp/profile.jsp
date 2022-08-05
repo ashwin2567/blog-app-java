@@ -37,7 +37,15 @@ if (user == null) {
 	integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx"
 	crossorigin="anonymous">
 <link href="css/style.css" rel="stylesheet" type="text/css">
+<style>
+body{
+	background :url(pics/wallpaper.jpg);
+	background-size:cover;
+	background-attachment:fixed;
+}
 
+
+</style>
 </head>
 <body>
 	<!-- navbar -->

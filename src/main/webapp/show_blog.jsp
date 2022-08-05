@@ -1,3 +1,5 @@
+<%@page import="java.text.DateFormat"%>
+<%@page import="com.tech.blog.dao.UserDao"%>
 <%@page import="com.tech.blog.entities.Category"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="com.tech.blog.entities.Post"%>
@@ -16,6 +18,8 @@ if (user == null) {
 int postId = Integer.parseInt(request.getParameter("post_id"));
 PostDao pdao = new PostDao(ConnectionProvider.getConnection());
 Post p = pdao.getPostById(postId);
+UserDao ud = new UserDao(ConnectionProvider.getConnection());
+User u = ud.getUserByUserId(p.getUserId());
 %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
@@ -39,7 +43,13 @@ Post p = pdao.getPostById(postId);
 	integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx"
 	crossorigin="anonymous">
 <link href="css/style.css" rel="stylesheet" type="text/css">
-
+<style>
+body {
+	background: url(pics/wallpaper.jpg);
+	background-size: cover;
+	background-attachment: fixed;
+}
+</style>
 
 
 </head>
@@ -58,8 +68,8 @@ Post p = pdao.getPostById(postId);
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 					<li class="nav-item"><a class="nav-link active"
-						aria-current="page" href="profile.jsp"><span class="fa fa-bell-o"></span>All Posts</a>
-					</li>
+						aria-current="page" href="profile.jsp"><span
+							class="fa fa-bell-o"></span>All Posts</a></li>
 
 					<li class="nav-item dropdown"><a
 						class="nav-link dropdown-toggle" href="#" role="button"
@@ -82,7 +92,7 @@ Post p = pdao.getPostById(postId);
 				<ul class="navbar-nav mr-right">
 					<li class="nav-item"><a class="nav-link" href="#"
 						data-bs-toggle="modal" data-bs-target="#profile-Modal"><span
-							class="fa fa-user-circle"></span><%=user.getName()%></a></li>
+							class="fa fa-user-circle"></span><%=u.getName()%></a></li>
 
 					<li class="nav-item"><a class="nav-link" href="LogoutServlet"><span
 							class="fa fa-sign-out"></span>Logout</a></li>
@@ -105,17 +115,25 @@ Post p = pdao.getPostById(postId);
 					</div>
 					<div class="card-body">
 						<p><%=p.getpContent()%></p>
-						<br> 
-						<img src="blog_pics/<%=p.getpPic()%>" class="card-img-top my-2" 
-						alt="Card cap image">
-						 <br> 
+						<br> <img src="blog_pics/<%=p.getpPic()%>"
+							class="card-img-top my-2" alt="Card cap image"> <br>
+						<div class="row my-3 row-user">
+							<div class="col-md-8">
+								<p class="post-user-info">
+									Posted By: <a href="#"><%=user.getName()%></a>
+								</p>
+							</div>
+							<div class="col-md-4">
+								<p class="post-date"><%=DateFormat.getDateTimeInstance().format(p.getpDate())%></p>
+							</div>
+						</div>
 						<pre><%=p.getpCode()%></pre>
 					</div>
 					<div class="card-footer primary-background text-white text-center">
 
 						<a href="#" class="btn btn-outline-light btn-sm"><i
-							class="fa fa-thumbs-o-up"><span> 10</span></i></a>
-						<a href="#" class="btn btn-outline-light btn-sm"><i
+							class="fa fa-thumbs-o-up"><span> 10</span></i></a> <a href="#"
+							class="btn btn-outline-light btn-sm"><i
 							class="fa fa-commenting-o"><span> 20</span></i></a>
 					</div>
 
@@ -295,7 +313,6 @@ Post p = pdao.getPostById(postId);
 
 
 	<!-- end of add post modal -->
-	<%=postId%>
 
 	<!--javascript  -->
 
