@@ -7,7 +7,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#"><span class = "fa fa-bell-o"></span>Learn</a>
+          <a class="nav-link active" aria-current="page" href="profile.jsp"><span class = "fa fa-bell-o"></span>Learn</a>
         </li>
         
         <li class="nav-item dropdown">

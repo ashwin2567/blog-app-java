@@ -1,13 +1,10 @@
-
-
 <%@page import="com.tech.blog.entities.Category"%>
 <%@page import="java.util.ArrayList"%>
+<%@page import="com.tech.blog.entities.Post"%>
 <%@page import="com.tech.blog.helper.ConnectionProvider"%>
 <%@page import="com.tech.blog.dao.PostDao"%>
-<%@page import="com.tech.blog.entities.Message"%>
 <%@page import="com.tech.blog.entities.User"%>
 <%@page errorPage="Error_page.jsp"%>
-
 <%
 User user = (User) session.getAttribute("currentuser");
 if (user == null) {
@@ -15,13 +12,18 @@ if (user == null) {
 }
 %>
 
+<%
+int postId = Integer.parseInt(request.getParameter("post_id"));
+PostDao pdao = new PostDao(ConnectionProvider.getConnection());
+Post p = pdao.getPostById(postId);
+%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Profile</title>
+<title>Techblog | <%=p.getpTitle()%></title>
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
 	rel="stylesheet"
@@ -37,6 +39,8 @@ if (user == null) {
 	integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx"
 	crossorigin="anonymous">
 <link href="css/style.css" rel="stylesheet" type="text/css">
+
+
 
 </head>
 <body>
@@ -54,7 +58,7 @@ if (user == null) {
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 					<li class="nav-item"><a class="nav-link active"
-						aria-current="page" href="#"><span class="fa fa-bell-o"></span>Learn</a>
+						aria-current="page" href="profile.jsp"><span class="fa fa-bell-o"></span>All Posts</a>
 					</li>
 
 					<li class="nav-item dropdown"><a
@@ -89,51 +93,42 @@ if (user == null) {
 	</nav>
 
 	<!-- end of navbar -->
-	<%
-	Message m = (Message) session.getAttribute("msg");
-	if (m != null) {
-	%>
-	<div class="alert <%=m.getCssClass()%> text-center" role="alert">
-		<%=m.getContent()%>
-	</div>
-	<%
-	session.removeAttribute("msg");
-	}
-	%>
-	<!-- main body of page -->
-	<main>
-		<div class="container">
-			<div class="row mt-4">
-				<div class="col-md-4">
-					<div class="list-group">
-						<a href="#" onclick="getPosts(0, this)" class="c-link list-group-item list-group-item-action"
-							aria-current="true"> All posts </a>
-						<%
-						PostDao pDao = new PostDao(ConnectionProvider.getConnection());
-						ArrayList<Category> category = pDao.getAllCategories();
-						for (Category c : category) {
-						%>
-						<a href="#" onclick="getPosts(<%=c.getCid() %>, this)" class="c-link list-group-item list-group-item-action"><%=c.getCname()%></a>
-						<%
-						}
-						%>
-					</div>
-				</div>
-				<div class="col-md-8">
-					<div class="container text-center" id="loader">
-						<i class="fa fa-refresh fa-3x fa-spin"></i>
-						<h3 class="mt-2">Loading...</h3>
-					</div>
-					<div class="container-fluid" id="post-container"></div>
-				</div>
-			</div>
-		</div>
-	</main>
 
+
+	<!-- main body of show blog -->
+	<div class="container">
+		<div class="row my-4">
+			<div class="col-md-8 offset-md-2">
+				<div class="card">
+					<div class="card-header primary-background text-white">
+						<h4><%=p.getpTitle()%></h4>
+					</div>
+					<div class="card-body">
+						<p><%=p.getpContent()%></p>
+						<br> 
+						<img src="blog_pics/<%=p.getpPic()%>" class="card-img-top my-2" 
+						alt="Card cap image">
+						 <br> 
+						<pre><%=p.getpCode()%></pre>
+					</div>
+					<div class="card-footer primary-background text-white text-center">
+
+						<a href="#" class="btn btn-outline-light btn-sm"><i
+							class="fa fa-thumbs-o-up"><span> 10</span></i></a>
+						<a href="#" class="btn btn-outline-light btn-sm"><i
+							class="fa fa-commenting-o"><span> 20</span></i></a>
+					</div>
+
+				</div>
+
+			</div>
+
+
+		</div>
+
+	</div>
 
 	<!-- end of main body -->
-
-
 
 	<!-- profile modal -->
 	<!-- Modal -->
@@ -300,6 +295,7 @@ if (user == null) {
 
 
 	<!-- end of add post modal -->
+	<%=postId%>
 
 	<!--javascript  -->
 
@@ -319,7 +315,6 @@ if (user == null) {
 		src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"
 		integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA=="
 		crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
 	<script>
 		$(document).ready(function() {
 			let editStatus = false;
@@ -409,32 +404,5 @@ if (user == null) {
 
 						});
 	</script>
-	<!-- loading post using ajax -->
-	<script>
-		function getPosts(catId, temp){
-			$("#loader").show();
-			$("#post-container").hide();
-			$(".c-link").removeClass('active');
-
-			
-			$.ajax({
-				url : "load_post.jsp",
-				data: {cid:catId},
-				success : function(data, textStatus, jqXHR) {
-					$("#loader").hide();
-					$("#post-container").show();
-					$("#post-container").html(data);
-					$(temp).addClass('active');
-				}
-			});
-			
-		}
-		$(document).ready(function(e) {
-			let allpostref = $('.c-link')[0];
-			getPosts(0, allpostref);
-		});
-	</script>
-
-
 </body>
 </html>

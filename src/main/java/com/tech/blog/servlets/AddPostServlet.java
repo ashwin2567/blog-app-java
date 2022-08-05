@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 import com.tech.blog.dao.PostDao;
+import com.tech.blog.entities.Message;
 import com.tech.blog.entities.Post;
 import com.tech.blog.entities.User;
 import com.tech.blog.helper.ConnectionProvider;
@@ -26,6 +27,7 @@ public class AddPostServlet extends HttpServlet {
 	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		PrintWriter out = response.getWriter();
 		int catId = Integer.parseInt(request.getParameter("cid"));
+		
 		String pTitle = request.getParameter("pTitle");
 		String pContent = request.getParameter("pContent");
 		String pCode = request.getParameter("pCode");
