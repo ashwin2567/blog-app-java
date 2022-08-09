@@ -1,3 +1,4 @@
+<%@page import="com.tech.blog.dao.LikeDao"%>
 <%@page import="java.text.DateFormat"%>
 <%@page import="com.tech.blog.dao.UserDao"%>
 <%@page import="com.tech.blog.entities.Category"%>
@@ -19,7 +20,10 @@ int postId = Integer.parseInt(request.getParameter("post_id"));
 PostDao pdao = new PostDao(ConnectionProvider.getConnection());
 Post p = pdao.getPostById(postId);
 UserDao ud = new UserDao(ConnectionProvider.getConnection());
-User u = ud.getUserByUserId(p.getUserId());
+User u = ud.getUserByUserId(p.getUserId()); // The user who posted the blog.
+LikeDao ld = new LikeDao(ConnectionProvider.getConnection());
+int noOfLikes = ld.countLikeOnPost(p.getPid());
+
 %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
@@ -50,10 +54,11 @@ body {
 	background-attachment: fixed;
 }
 </style>
-
-
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v14.0"></script>
 </head>
 <body>
+
 	<!-- navbar -->
 	<nav class="navbar navbar-expand-lg navbar-dark primary-background">
 		<div class="container-fluid">
@@ -92,7 +97,7 @@ body {
 				<ul class="navbar-nav mr-right">
 					<li class="nav-item"><a class="nav-link" href="#"
 						data-bs-toggle="modal" data-bs-target="#profile-Modal"><span
-							class="fa fa-user-circle"></span><%=u.getName()%></a></li>
+							class="fa fa-user-circle"></span><%=user.getName()%></a></li>
 
 					<li class="nav-item"><a class="nav-link" href="LogoutServlet"><span
 							class="fa fa-sign-out"></span>Logout</a></li>
@@ -120,7 +125,7 @@ body {
 						<div class="row my-3 row-user">
 							<div class="col-md-8">
 								<p class="post-user-info">
-									Posted By: <a href="#"><%=user.getName()%></a>
+									Posted By: <a href="#"><%=u.getName()%></a>
 								</p>
 							</div>
 							<div class="col-md-4">
@@ -131,12 +136,16 @@ body {
 					</div>
 					<div class="card-footer primary-background text-white text-center">
 
-						<a href="#" class="btn btn-outline-light btn-sm"><i
-							class="fa fa-thumbs-o-up"><span> 10</span></i></a> <a href="#"
+						<a href="#" onclick="doLike(<%=p.getPid() %>,<%=user.getId() %>)" class="btn btn-outline-light btn-sm"><i
+							class="fa fa-thumbs-o-up"><span class="like-counter">  <%=noOfLikes %></span></i></a> <a href="#"
 							class="btn btn-outline-light btn-sm"><i
 							class="fa fa-commenting-o"><span> 20</span></i></a>
+							
 					</div>
-
+					<div class="card-footer">
+					<div class="fb-comments" data-href="http://localhost:8081/Techblog/show_blog.jsp?post_id=<%=p.getPid() %>" data-width="5" data-numposts="5"></div>
+					</div>
+					
 				</div>
 
 			</div>
@@ -359,6 +368,8 @@ body {
 
 		});
 	</script>
+	<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v14.0"></script>
+	
 
 	<!-- add post js -->
 	<script>
